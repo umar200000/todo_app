@@ -1,8 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/widgets_file/date_time.dart';
+import 'package:todo_app/widgets_file/plans_list.dart';
+import 'package:todo_app/widgets_file/your_plans_page.dart';
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class MyHomePage extends StatefulWidget {
+  MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  DateTime dateTime = DateTime.now();
+  List<int> plansIndex = [];
+
+  void chooseCalendar(BuildContext context) {
+    showDatePicker(
+      initialDate: DateTime.now(),
+      context: context,
+      firstDate: DateTime(2023),
+      lastDate: DateTime(2025),
+    ).then((value) {
+      if (value != null) {
+        setState(() {
+          dateTime = value;
+        });
+      }
+    });
+  }
+
+  void increaseDecreaseDay(bool t) {
+    setState(() {
+      if (t) {
+        dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day + 1);
+      } else {
+        dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day - 1);
+      }
+    });
+  }
+
+  void checkPlansWork(int value) {
+    setState(() {
+      if (plansIndex.contains(value)) {
+        plansIndex.remove(value);
+      } else
+        plansIndex.add(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,26 +59,24 @@ class MyHomePage extends StatelessWidget {
         ),
         body: Column(
           children: [
-            DateTime(),
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("03"),
-                    Text("00"),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("your plans"),
-                    Text(""),
-                  ],
-                ),
-              ],
-            )
+            DateTime10(
+              timeCountroller: chooseCalendar,
+              dateTime: dateTime,
+              increaseDecreaseDay: increaseDecreaseDay,
+            ),
+            SizedBox(
+              height: 50,
+            ),
+            YourPlansPage(),
+            SizedBox(
+              height: 35,
+            ),
+            PlansList(checkPlans: checkPlansWork, plansController: plansIndex),
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(Icons.add),
         ),
       ),
     );

@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-class DateTime extends StatelessWidget {
-  const DateTime({super.key});
+class DateTime10 extends StatelessWidget {
+  final void Function(BuildContext context) timeCountroller;
+  final DateTime dateTime;
+  final void Function(bool t) increaseDecreaseDay;
+  final bool a = true;
+  final bool b = false;
+
+  DateTime10({
+    required this.timeCountroller,
+    required this.dateTime,
+    required this.increaseDecreaseDay,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +23,18 @@ class DateTime extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              increaseDecreaseDay(b);
+            },
             icon: const Icon(
               Icons.arrow_left,
               size: 35,
             ),
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              timeCountroller(context);
+            },
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
@@ -27,20 +42,22 @@ class DateTime extends StatelessWidget {
                   color: Colors.black,
                   fontFamily: GoogleFonts.montserrat().fontFamily,
                 ),
-                children: const [
+                children: [
                   TextSpan(
-                    text: "Friday, ",
+                    text: "${DateFormat.EEEE().format(dateTime)}, ",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
-                    text: "6 Aug",
+                    text: "${DateFormat("d MMM").format(dateTime)}",
                   ),
                 ],
               ),
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              increaseDecreaseDay(a);
+            },
             icon: const Icon(
               Icons.arrow_right,
               size: 35,
