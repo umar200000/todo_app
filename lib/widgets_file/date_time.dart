@@ -45,7 +45,7 @@ class DateTime10 extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: "${DateFormat.EEEE().format(dateTime)}, ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   TextSpan(
                     text: "${DateFormat("d MMM").format(dateTime)}",

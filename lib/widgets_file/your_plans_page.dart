@@ -1,32 +1,34 @@
 import 'package:flutter/material.dart';
 
 class YourPlansPage extends StatelessWidget {
-  const YourPlansPage({super.key});
+  final int plansLenght;
+  final int plansDone;
+  YourPlansPage(this.plansLenght, this.plansDone, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "03",
-                style: TextStyle(
+                plansLenght < 10 ? "0$plansLenght" : plansLenght.toString(),
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                "00",
-                style: TextStyle(
+                plansDone < 10 ? "0$plansDone" : plansDone.toString(),
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("all your plans"),
