@@ -3,9 +3,9 @@ import 'package:todo_app/plans_todo/add_plans.dart';
 import 'package:todo_app/widgets_file/date_time.dart';
 import 'package:todo_app/widgets_file/plans_list.dart';
 import 'package:todo_app/widgets_file/your_plans_page.dart';
-import 'package:intl/intl.dart';
 
 import '../plans_todo/plans_model.dart';
+import '../tools/hive_repo.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
@@ -15,8 +15,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  HiveRepo hiveRepo = HiveRepo();
   DateTime _dateTime = DateTime.now();
-  List<PlansModel> _plansList = Plans().plansList;
+  Plans _plansList = Plans();
 
   void _chooseCalendar(BuildContext context) {
     showDatePicker(
@@ -47,26 +48,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _isDonePlan(String id) {
     setState(() {
-      _plansList.firstWhere((element) => element.id == id).isDonePlan();
+      _plansList
+          .todoByDate(_dateTime)
+          .firstWhere((element) => element.id == id)
+          .isDonePlan();
     });
+    hiveRepo.savePlanList(_plansList.plansList);
   }
 
   void _deletePlan(String id) {
     setState(() {
-      _plansList.removeWhere((element) => element.id == id);
+      _plansList.plansList.removeWhere((element) => element.id == id);
+      hiveRepo.savePlanList(_plansList.plansList);
     });
   }
 
-  int get _plansLenght => _plansList.length;
-  int get _donePlans => _plansList.where((element) => element.isDone).length;
+  int get _plansLenght => _plansList.todoByDate(_dateTime).length;
+  int get _donePlans => _plansList
+      .todoByDate(_dateTime)
+      .where((element) => element.isDone)
+      .length;
 
   void todoDateTime(String planName, DateTime planTime) {
-    print(planName);
-    print(planTime);
+    setState(() {
+      _plansList.addPlans(planName, planTime);
+    });
   }
 
   void _addPlans(BuildContext context) {
     showModalBottomSheet(
+        isScrollControlled: true,
+        isDismissible: false,
         context: context,
         builder: (ctx) {
           return AddPlansPage(todoDateTime);
@@ -97,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 35,
             ),
             PlansList(
-              planList: _plansList,
+              planList: _plansList.todoByDate(_dateTime),
               isDonePlan: _isDonePlan,
               deletePlan: _deletePlan,
             ),
