@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/plans_todo/add_plans.dart';
 import 'package:todo_app/widgets_file/date_time.dart';
 import 'package:todo_app/widgets_file/plans_list.dart';
 import 'package:todo_app/widgets_file/your_plans_page.dart';
+import 'package:intl/intl.dart';
 
 import '../plans_todo/plans_model.dart';
 
@@ -58,50 +60,16 @@ class _MyHomePageState extends State<MyHomePage> {
   int get _plansLenght => _plansList.length;
   int get _donePlans => _plansList.where((element) => element.isDone).length;
 
+  void todoDateTime(String planName, DateTime planTime) {
+    print(planName);
+    print(planTime);
+  }
+
   void _addPlans(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (ctx) {
-          return Container(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(labelText: "Title"),
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Plan Day is not chosen..."),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text("Choose Day"),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "CANCEL",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text("Enter"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
+          return AddPlansPage(todoDateTime);
         });
   }
 
