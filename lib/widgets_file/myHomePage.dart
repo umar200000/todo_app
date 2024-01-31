@@ -18,6 +18,8 @@ class _MyHomePageState extends State<MyHomePage> {
   HiveRepo hiveRepo = HiveRepo();
   DateTime _dateTime = DateTime.now();
   Plans _plansList = Plans();
+  int a = 0;
+  Number number = Number();
 
   void _chooseCalendar(BuildContext context) {
     showDatePicker(
@@ -36,6 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _increaseDecreaseDay(bool t) {
     setState(() {
+      number.b++;
+      hiveRepo.saveCounter(number);
       if (t) {
         _dateTime =
             DateTime(_dateTime.year, _dateTime.month, _dateTime.day + 1);
@@ -53,13 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
           .firstWhere((element) => element.id == id)
           .isDonePlan();
     });
-    hiveRepo.savePlanList(_plansList.plansList);
+    // hiveRepo.savePlanList(_plansList.plansList);
   }
 
   void _deletePlan(String id) {
     setState(() {
       _plansList.plansList.removeWhere((element) => element.id == id);
-      hiveRepo.savePlanList(_plansList.plansList);
+      // hiveRepo.savePlanList(_plansList.plansList);
     });
   }
 
@@ -83,6 +87,21 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (ctx) {
           return AddPlansPage(todoDateTime);
         });
+  }
+
+  @override
+  void initState() {
+    // number.b = hiveRepo.getCounter();
+    // print(number.b);
+    // print(hiveRepo.getCounter());
+    // List<PlansModel> list = hiveRepo.getPlanList();
+    // list.forEach((element) {
+    //   print(element.name);
+    // });
+    _plansList.plans = hiveRepo.getPlanList();
+    print(2);
+
+    super.initState();
   }
 
   @override

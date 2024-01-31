@@ -14,12 +14,15 @@ class PlansModel {
 
 class Plans {
   HiveRepo hiveRepo = HiveRepo();
-  final List<PlansModel> _plans = HiveRepo().getPlansList;
+  List<PlansModel> plans = [];
+  setList(List<PlansModel> list) {
+    plans = list;
+  }
 
-  List<PlansModel> get plansList => _plans;
+  List<PlansModel> get plansList => plans;
 
   List<PlansModel> todoByDate(DateTime date) {
-    return _plans
+    return plans
         .where((element) =>
             element.time.day == date.day &&
             element.time.month == date.month &&
@@ -28,10 +31,23 @@ class Plans {
   }
 
   void addPlans(String planName, DateTime dateTimePlan) {
-    _plans.add(
+    plans.add(
       PlansModel(
-          id: "id${_plans.length + 1}", name: planName, time: dateTimePlan),
+          id: "id${plans.length + 1}", name: planName, time: dateTimePlan),
     );
-    hiveRepo.savePlanList(_plans);
+
+    hiveRepo.savePlanList(plans);
+    List<PlansModel> list = hiveRepo.getPlanList();
+    list.forEach((element) {
+      print(element.name);
+    });
+    // Number number = Number();
+    // number.b = 1;
+    // hiveRepo.saveCounter(number);
+    print("hive ishlayabdi");
+
+    // HiveRepo().getPlansList().forEach((element) {
+    //   print(element.name);
+    // });
   }
 }
