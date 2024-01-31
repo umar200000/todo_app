@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/plans_todo/add_plans.dart';
+import 'package:todo_app/tools/gloibal_hive.dart';
 import 'package:todo_app/widgets_file/date_time.dart';
 import 'package:todo_app/widgets_file/plans_list.dart';
 import 'package:todo_app/widgets_file/your_plans_page.dart';
 
 import '../plans_todo/plans_model.dart';
-import '../tools/hive_repo.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
@@ -15,11 +15,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  HiveRepo hiveRepo = HiveRepo();
+  Plans plans = Plans();
   DateTime _dateTime = DateTime.now();
-  Plans _plansList = Plans();
-  int a = 0;
-  Number number = Number();
 
   void _chooseCalendar(BuildContext context) {
     showDatePicker(
@@ -38,8 +35,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _increaseDecreaseDay(bool t) {
     setState(() {
-      number.b++;
-      hiveRepo.saveCounter(number);
       if (t) {
         _dateTime =
             DateTime(_dateTime.year, _dateTime.month, _dateTime.day + 1);
@@ -52,30 +47,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _isDonePlan(String id) {
     setState(() {
-      _plansList
+      plans
           .todoByDate(_dateTime)
           .firstWhere((element) => element.id == id)
           .isDonePlan();
+      hiveRepo.savePlanList1(plans.plans);
     });
-    // hiveRepo.savePlanList(_plansList.plansList);
   }
 
   void _deletePlan(String id) {
     setState(() {
-      _plansList.plansList.removeWhere((element) => element.id == id);
-      // hiveRepo.savePlanList(_plansList.plansList);
+      plans.plansList.removeWhere((element) => element.id == id);
+      hiveRepo.savePlanList1(plans.plans);
     });
   }
 
-  int get _plansLenght => _plansList.todoByDate(_dateTime).length;
-  int get _donePlans => _plansList
-      .todoByDate(_dateTime)
-      .where((element) => element.isDone)
-      .length;
+  int get _plansLenght => plans.todoByDate(_dateTime).length;
+  int get _donePlans =>
+      plans.todoByDate(_dateTime).where((element) => element.isDone).length;
 
   void todoDateTime(String planName, DateTime planTime) {
     setState(() {
-      _plansList.addPlans(planName, planTime);
+      plans.addPlans(planName, planTime);
     });
   }
 
@@ -91,16 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    // number.b = hiveRepo.getCounter();
-    // print(number.b);
-    // print(hiveRepo.getCounter());
-    // List<PlansModel> list = hiveRepo.getPlanList();
-    // list.forEach((element) {
-    //   print(element.name);
-    // });
-    _plansList.plans = hiveRepo.getPlanList();
-    print(2);
-
+    plans.plans = hiveRepo.getPlanList1();
     super.initState();
   }
 
@@ -128,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 35,
             ),
             PlansList(
-              planList: _plansList.todoByDate(_dateTime),
+              planList: plans.todoByDate(_dateTime),
               isDonePlan: _isDonePlan,
               deletePlan: _deletePlan,
             ),

@@ -1,32 +1,34 @@
-import 'package:hive/hive.dart';
+import 'dart:convert';
 
-import '../plans_todo/plans_model.dart';
+import 'package:hive/hive.dart';
+import 'package:todo_app/plans_todo/plans_model.dart';
 
 class HiveRepo {
   final Box _box = Hive.box("plansList");
 
-  savePlanList(List<PlansModel> list) {
-    _box.put("list", list);
+  savePlanList1(List<PlansModel> list) {
+    final List<Map<String, dynamic>> res = [];
+
+    for (final plan in list) {
+      res.add(plan.toJSON());
+    }
+    [
+      {"id": 213, "name": "asda", "time": 3242423453, "isDone": false}
+    ];
+    '[{"id": 213, "name": "asda", "time": 3242423453, "isDone": false}]';
+    _box.put("list", jsonEncode(res));
   }
 
-  getPlanList() {
-    List<dynamic> list = _box.get("list", defaultValue: <PlansModel>[]);
-    List<PlansModel> list2 = [];
-    list.forEach((element) {
-      list2.add(element);
-    });
-    return list2;
-  }
+  List<PlansModel> getPlanList1() {
+    final String str = _box.get("list", defaultValue: "");
+    final List<PlansModel> res = [];
+    if (str.isNotEmpty) {
+      final List<dynamic> json = jsonDecode(str);
 
-  saveCounter(Number number) {
-    _box.put("sum", number.b);
+      for (final elem in json) {
+        res.add(PlansModel.fromJSON(elem));
+      }
+    }
+    return res;
   }
-
-  getCounter() {
-    return _box.get("sum", defaultValue: Number().b);
-  }
-}
-
-class Number {
-  int b = 10;
 }

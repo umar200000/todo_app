@@ -1,23 +1,42 @@
-import 'package:todo_app/tools/hive_repo.dart';
+import 'package:todo_app/tools/gloibal_hive.dart';
 
 class PlansModel {
   final String id;
   final String name;
   final DateTime time;
-  bool isDone = false;
-  PlansModel({required this.id, required this.name, required this.time});
+  bool isDone;
+  PlansModel(
+      {required this.id,
+      required this.name,
+      required this.time,
+      this.isDone = false});
 
   void isDonePlan() {
     isDone = !isDone;
   }
+
+  Map<String, dynamic> toJSON() {
+    return {
+      "id": id,
+      "name": name,
+      "time": time.millisecondsSinceEpoch,
+      "isDone": isDone
+    };
+  }
+
+  static PlansModel fromJSON(Map<String, dynamic> value) {
+    return PlansModel(
+      id: value["id"],
+      name: value["name"],
+      time: DateTime.fromMillisecondsSinceEpoch(value["time"]),
+      isDone: value["isDone"],
+    );
+  }
 }
 
 class Plans {
-  HiveRepo hiveRepo = HiveRepo();
+  // static HiveRepo hiveRepo = HiveRepo();
   List<PlansModel> plans = [];
-  setList(List<PlansModel> list) {
-    plans = list;
-  }
 
   List<PlansModel> get plansList => plans;
 
@@ -35,19 +54,11 @@ class Plans {
       PlansModel(
           id: "id${plans.length + 1}", name: planName, time: dateTimePlan),
     );
-
-    hiveRepo.savePlanList(plans);
-    List<PlansModel> list = hiveRepo.getPlanList();
-    list.forEach((element) {
-      print(element.name);
-    });
-    // Number number = Number();
-    // number.b = 1;
-    // hiveRepo.saveCounter(number);
-    print("hive ishlayabdi");
-
-    // HiveRepo().getPlansList().forEach((element) {
-    //   print(element.name);
+    // List<String> list = [];
+    // plans.forEach((element) {
+    //   list.add(
+    //       "${element.id}#${element.name}#${element.time}#${element.isDone}");
     // });
+    hiveRepo.savePlanList1(plans);
   }
 }
